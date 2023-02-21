@@ -51,7 +51,7 @@ def read_data_file(filter_year: int, filename: str) -> list:
     """
     year_regex = r"\((?P<year>[12][09]\d{2})\)"
     year_regex_compile = re.compile(year_regex)
-    with open(filename, "r", encoding="ISO-8859-1") as file:
+    with open(filename, "r") as file:
         data = list()
         for line in file:
             line = line.strip()

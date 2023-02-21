@@ -3,7 +3,6 @@ import os
 import random
 import re
 import sys
-from typing import List, Tuple
 
 import folium
 from geopy.extra.rate_limiter import RateLimiter
@@ -32,22 +31,11 @@ def arg_parse() -> argparse.Namespace:
     """
     Parse command line arguments. Checks the file for existence
     """
-    parser = argparse.ArgumentParser(
-        description="The program generates an HTML map with the closest"
-        " movie locations to the location specified by the user"
-    )
+    parser = argparse.ArgumentParser(description="The program generates an HTML map with the closest movie locations to the location specified by the user")
     parser.add_argument("year", type=int, help="Movie launch date")
     parser.add_argument("latitude", type=float, help="Latitude")
-    parser.add_argument(
-        "longitude",
-        type=float,
-        help="Longitude",
-    )
-    parser.add_argument(
-        "path_to_dataset",
-        type=str,
-        help="Path to dataset",
-    )
+    parser.add_argument("longitude", type=float, help="Longitude")
+    parser.add_argument("path_to_dataset", type=str, help="Path to dataset")
     args = parser.parse_args()
 
     if not os.path.exists(args.path_to_dataset):
@@ -57,7 +45,7 @@ def arg_parse() -> argparse.Namespace:
     return args
 
 
-def read_data_file(filter_year: int, filename: str) -> List:
+def read_data_file(filter_year: int, filename: str) -> list:
     """
     Read ata file
     """
@@ -80,7 +68,7 @@ def read_data_file(filter_year: int, filename: str) -> List:
         return data
 
 
-def get_location_coordinates(data: List, point: Tuple[float, float]) -> List:
+def get_location_coordinates(data: list, point: tuple) -> list:
     """
     Get location coordinates
     """
@@ -96,64 +84,41 @@ def get_location_coordinates(data: List, point: Tuple[float, float]) -> List:
                 continue
             else:
                 if (location.latitude, location.longitude) in geo_locator_data:
-                    if (
-                        geo_locator_data[(location.latitude, location.longitude)][0]
-                        != description
-                    ):
+                    if (geo_locator_data[(location.latitude, location.longitude)][0] != description):
                         latitude = location.latitude + random.random() * 0e-3
                         longitude = location.latitude + random.random() * 0e-3
-                    # else:
-                    #     continue
                 else:
                     latitude = location.latitude
                     longitude = location.longitude
 
                 distance = distance_haversine(user_lt, user_ln, latitude, longitude)
 
-                geo_locator_data[(latitude, longitude)] = [
-                    description,
-                    location,
-                    distance,
-                ]
+                geo_locator_data[(latitude, longitude)] = [description, location, distance]
                 break
     sorted_geo_locator_data = sorted(geo_locator_data.items(), key=lambda i: i[1][2])
     return sorted_geo_locator_data[:10]
 
 
-def map_creation(data: List, year: int, point: Tuple[float, float]) -> None:
+def map_creation(data: list, year: int, point: tuple) -> None:
     """
     Generate html file
     """
     latitude, longitude = point
-    film_map = folium.Map(
-        tiles="Stamen Terrain", location=[latitude, longitude], zoom_start=2
-    )
+    film_map = folium.Map(tiles="Stamen Terrain", location=[latitude, longitude], zoom_start=2)
     customer_feature_group = folium.FeatureGroup(name="Your location")
-    customer_feature_group.add_child(
-        folium.Marker(
-            location=[latitude, longitude],
-            popup="Your location",
-            icon=folium.Icon(color="green", icon_color="#FFFF00"),
-        )
-    )
+    customer_feature_group.add_child(folium.Marker(location=[latitude, longitude],popup="Your location",icon=folium.Icon(color="green", icon_color="#FFFF00")))
     film_map.add_child(customer_feature_group)
 
     film_feature_group = folium.FeatureGroup(name="Тhe film location")
     for point, info in data:
-        film_feature_group.add_child(
-            folium.Marker(
-                location=point, popup=f"{info[0]} - {info[1]}", icon=folium.Icon()
-            )
-        )
+        film_feature_group.add_child(folium.Marker(location=point, popup=f"{info[0]} - {info[1]}", icon=folium.Icon()))
     film_map.add_child(film_feature_group)
 
     folium.LayerControl().add_to(film_map)
     film_map.save(f"film_map_({year})-({latitude},{longitude}).html")
 
 
-def main(
-    year: int, latitude: float, longitude: float, path_to_dataset="../locations.list"
-) -> None:
+def main(year: int, latitude: float, longitude: float, path_to_dataset="../locations.list") -> None:
     """
     Create map by CLI args input
     """
@@ -166,4 +131,4 @@ def main(
 if __name__ == "__main__":
     arguments = arg_parse()
     main(**arguments.__dict__)
-    # python main.py 2014 49.817545 24.023932 ../locations1000.list
+    # python main.py 2010 49.817545 24.023932 locations100.list

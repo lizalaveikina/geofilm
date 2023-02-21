@@ -21,6 +21,6 @@
 Для цього необхідно виконати команду у наступном форматі
 
 ```bash
-python main.py 2010 49.817545 24.023932 ../locations5000.list
+python main.py 2010 49.817545 24.023932 locations5000.list
 ```
 ![example](example.png)

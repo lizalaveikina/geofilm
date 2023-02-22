@@ -1,8 +1,6 @@
 import argparse
-import os
 import random
 import re
-import sys
 
 import folium
 from geopy.extra.rate_limiter import RateLimiter
@@ -37,11 +35,7 @@ def arg_parse() -> argparse.Namespace:
     parser.add_argument("longitude", type=float, help="Longitude")
     parser.add_argument("path_to_dataset", type=str, help="Path to dataset")
     args = parser.parse_args()
-
-    if not os.path.exists(args.path_to_dataset):
-        print(f"{sys.argv[0]}: error: The specified dataset files does not exist:")
-        print(parser.format_usage())
-        exit(1)
+    
     return args
 
 

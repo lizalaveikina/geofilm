@@ -127,4 +127,4 @@ def main(year: int, latitude: float, longitude: float, path_to_dataset="../locat
 if __name__ == "__main__":
     arguments = arg_parse()
     main(**arguments.__dict__)
-    # python3 main.py 2005 49.817545 24.023932 short_locations.list
+

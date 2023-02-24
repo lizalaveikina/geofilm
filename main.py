@@ -35,18 +35,20 @@ def arg_parse() -> argparse.Namespace:
     parser.add_argument("longitude", type=float, help="Longitude")
     parser.add_argument("path_to_dataset", type=str, help="Path to dataset")
     args = parser.parse_args()
-    
+
     return args
 
 
 def read_data_file(filter_year: int, filename: str) -> list:
     """
-    Read ata file
+    Read data file
     """
     year_regex = r"\((?P<year>[12][09]\d{2})\)"
     year_regex_compile = re.compile(year_regex)
-    with open(filename, "r") as file:
+    with open(filename, "r" ) as file:
         data = list()
+        for _ in range(14):
+            next(file)
         for line in file:
             line = line.strip()
             if line[-1] == ")":
@@ -125,4 +127,4 @@ def main(year: int, latitude: float, longitude: float, path_to_dataset="../locat
 if __name__ == "__main__":
     arguments = arg_parse()
     main(**arguments.__dict__)
-    # python main.py 2010 49.817545 24.023932 locations100.list
+    # python3 main.py 2005 49.817545 24.023932 short_locations.list
